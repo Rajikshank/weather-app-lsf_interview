@@ -1,43 +1,75 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 
-import { useGetCurrentWeather } from "../hooks/UsefetchWeather";
+import {
+  useGetCurrentWeather,
+  useGetWeatherForeCast,
+} from "../hooks/usefetchWeather";
 import { Loader2 } from "lucide-react";
+import LocationCard from "./LocationCard";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import SearchBox from "./SearchBox";
+import ForecastCard from "./ForcastCard";
 
 const Dashboard = () => {
-  const [location, setLocation] = useState<string>(() => localStorage.getItem("location") ?? "Colombo");
+  const [location, setLocation] = useState<string>(
+    () => localStorage.getItem("location") ?? "Colombo"
+  );
+
   const [query, setLocationQuery] = useState(location);
-  const { data, error, isLoading } = useGetCurrentWeather(query);
+  // const { data, error, isLoading } = useGetCurrentWeather(query);
+  const { data, error, isLoading } = useGetWeatherForeCast(query);
 
-  console.log("weather data ",data)
+  console.log("weather data ", data);
   return (
-    <div className=" flex justify-center items-center py-2  ">
-      <div className="  ">
-        <input
-          type="text"
-          placeholder="Enter your location"
-          onChange={(e) => setLocation(() => e.target.value)}
-        />
+    <div className=" flex flex-col gap-2 justify-center items-center py-2 lg:px-8 lg:py-4 ">
+      <Card className=" w-full bg-transparent border-none shadow-none ">
+        <CardHeader>
+          <SearchBox
+            isloading={isLoading}
+            location={location}
+            setLocation={setLocation}
+            setQuery={setLocationQuery}
+          />
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2">
+          <div className="lg:grid-cols-3 grid gap-8">
+            <div>
+              <LocationCard
+                isloading={isLoading}
+                data={data!}
+                currentLocation={query}
+                location={location}
+                setLocation={setLocation}
+                setQuery={setLocationQuery}
+              />
+            </div>
+            <div className="lg:col-span-2 ">
+              <ForecastCard
+                isloading={isLoading}
+                data={data!}
+                currentLocation={query}
+                location={location}
+                setLocation={setLocation}
+                setQuery={setLocationQuery}
+              />
+            </div>
+          </div>
 
-        <button
-          onClick={() => {
-            localStorage.setItem("location",location)
-            setLocationQuery(() => location);
-          }}
-          className="bg-yellow-300 mx-2 rounded-md p-2"
-        >
-          Get weather
-        </button>
-      </div>
-
-      <div>
-        {isLoading && <div > <Loader2 className="text-white size-10 animate-spin"/> </div>}
-        <p>
-          {data?.current && !isLoading
-            ? data.current.condition.text
-            : "no data found"}
-        </p>
-      </div>
+          <div className="lg:grid-cols-3 grid gap-8">
+            <div className="col-span-2">
+              <ForecastCard
+                isloading={isLoading}
+                data={data!}
+                currentLocation={query}
+                location={location}
+                setLocation={setLocation}
+                setQuery={setLocationQuery}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
