@@ -12,6 +12,7 @@ import {
   Sun,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "./ui/skeleton";
 
 // Type definitions for WeatherAPI.com forecast data
 interface WeatherCondition {
@@ -200,51 +201,56 @@ const ForecastCard = ({
 
     // Add transition effect
     setIsTransitioning(true);
-    
+
     const timer = setTimeout(() => {
       if (activeTab === "today") {
         // Get today's hourly forecast
         const todayForecast = data.forecast.forecastday[0];
         if (todayForecast) {
           const currentHour = new Date().getHours();
-          const relevantHours = todayForecast.hour.slice(currentHour, Math.min(currentHour + 8, 24));
-          
-          const processedHourly: ProcessedHourlyData[] = relevantHours.map((hour) => ({
-            time: hour.time,
-            hour: new Date(hour.time).toLocaleTimeString("en-US", { 
-              hour: "numeric", 
-              hour12: true 
-            }),
-            temp_c: hour.temp_c,
-            condition: hour.condition,
-            wind_kph: hour.wind_kph,
-            humidity: hour.humidity,
-            chance_of_rain: hour.chance_of_rain,
-          }));
-          
+          const relevantHours = todayForecast.hour.slice(
+            currentHour,
+            Math.min(currentHour + 8, 24)
+          );
+
+          const processedHourly: ProcessedHourlyData[] = relevantHours.map(
+            (hour) => ({
+              time: hour.time,
+              hour: new Date(hour.time).toLocaleTimeString("en-US", {
+                hour: "numeric",
+                hour12: true,
+              }),
+              temp_c: hour.temp_c,
+              condition: hour.condition,
+              wind_kph: hour.wind_kph,
+              humidity: hour.humidity,
+              chance_of_rain: hour.chance_of_rain,
+            })
+          );
+
           setHourlyData(processedHourly);
           setWeatherData([]);
         }
       } else if (activeTab === "7day") {
-     
-        const processedForecast: ProcessedForecastData[] = data.forecast.forecastday.map((forecastDay) => ({
-          date: forecastDay.date,
-          day: new Date(forecastDay.date).toLocaleDateString("en-US", { 
-            weekday: "short" 
-          }),
-          temp_c: forecastDay.day.avgtemp_c,
-          temp_f: forecastDay.day.avgtemp_f,
-          condition: forecastDay.day.condition,
-          wind_kph: forecastDay.day.maxwind_kph,
-          humidity: forecastDay.day.avghumidity,
-          maxtemp_c: forecastDay.day.maxtemp_c,
-          mintemp_c: forecastDay.day.mintemp_c,
-        }));
-        
+        const processedForecast: ProcessedForecastData[] =
+          data.forecast.forecastday.map((forecastDay) => ({
+            date: forecastDay.date,
+            day: new Date(forecastDay.date).toLocaleDateString("en-US", {
+              weekday: "short",
+            }),
+            temp_c: forecastDay.day.avgtemp_c,
+            temp_f: forecastDay.day.avgtemp_f,
+            condition: forecastDay.day.condition,
+            wind_kph: forecastDay.day.maxwind_kph,
+            humidity: forecastDay.day.avghumidity,
+            maxtemp_c: forecastDay.day.maxtemp_c,
+            mintemp_c: forecastDay.day.mintemp_c,
+          }));
+
         setWeatherData(processedForecast);
         setHourlyData([]);
       }
-      
+
       setIsTransitioning(false);
     }, 150);
 
@@ -252,8 +258,9 @@ const ForecastCard = ({
   }, [activeTab, data]);
 
   const getBackgroundPattern = () => {
-    if (!data?.current?.condition?.text) return `bg-gradient-to-br ${getTimeBasedGradient()}`;
-    
+    if (!data?.current?.condition?.text)
+      return `bg-gradient-to-br ${getTimeBasedGradient()}`;
+
     const condition = data.current.condition.text.toLowerCase();
     if (condition.includes("rain")) {
       return "bg-gradient-to-br from-gray-600 via-blue-700 to-indigo-800";
@@ -265,19 +272,19 @@ const ForecastCard = ({
     return `bg-gradient-to-br ${getTimeBasedGradient()}`;
   };
 
-  if (isloading) {
-    return (
-      <div className="relative w-full h-full rounded-3xl p-1">
-        <div className="relative h-full rounded-3xl bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 backdrop-blur-xl border border-white/20 overflow-hidden">
-          <div className="relative h-full p-8 flex items-center justify-center">
-            <div className="text-white text-lg">Loading weather data...</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (isloading) {
+  //   return (
+  //     <div className="relative w-full h-full rounded-3xl p-1">
+  //       <div className="relative h-full rounded-3xl bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 backdrop-blur-xl border border-white/20 overflow-hidden">
+  //         <div className="relative h-full p-8 flex items-center justify-center">
+  //           <div className="text-white text-lg">Loading weather data...</div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
-  if (!data) {
+  if (!data && !isloading) {
     return (
       <div className="relative w-full h-full rounded-3xl p-1">
         <div className="relative h-full rounded-3xl bg-gradient-to-br from-gray-400 via-gray-500 to-gray-600 backdrop-blur-xl border border-white/20 overflow-hidden">
@@ -303,7 +310,7 @@ const ForecastCard = ({
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"></div>
 
         <div className="relative h-full p-8">
-          {/* Tab Navigation */}
+         
           <div className="lg:mb-10 md:mb-4 mb-4 flex gap-2 bg-slate-400 w-fit p-1 rounded-xl">
             <button
               onClick={() => setActiveTab("today")}
@@ -339,47 +346,92 @@ const ForecastCard = ({
             </button>
           </div>
 
-          
-          <div className={`grid gap-4 ${activeTab === "today" ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-6" : "grid-cols-2 md:grid-cols-4 lg:grid-cols-7"}`}>
-            {activeTab === "today" ? (
-              
-              hourlyData.map((hourData, index) => (
-                <div key={index} className="flex flex-col justify-center items-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
-                  <h3 className="font-semibold text-white text-sm mb-2">{hourData.hour}</h3>
-                  <img src={hourData.condition.icon} alt={hourData.condition.text} width={60} height={60} className="mb-2" />
-                  <h2 className="font-bold text-white text-xl mb-1">{Math.round(hourData.temp_c)}°</h2>
+          <div
+            className={`grid gap-4 overflow-x-auto  ${
+              activeTab === "today"
+                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-6 "
+                : "grid-cols-2 md:grid-cols-4 lg:grid-cols-7"
+            }`}
+          >
+            {isloading ? (
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                  <div>
+
+                    <Skeleton  className="h-[220px] w-[150px] rounded-md" />
+                  </div>
+                ))}
+              </div>
+            ) : activeTab === "today" ? (
+              hourlyData.slice(0,6).map((hourData, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col justify-center items-center p-4 bg-white/10 rounded-lg backdrop-blur-sm"
+                >
+                  <h3 className="font-semibold text-white text-sm mb-2">
+                    {hourData.hour}
+                  </h3>
+                  <img
+                    src={hourData.condition.icon}
+                    alt={hourData.condition.text}
+                    width={60}
+                    height={60}
+                    className="mb-2"
+                  />
+                  <h2 className="font-bold text-white text-xl mb-1">
+                    {Math.round(hourData.temp_c)}°
+                  </h2>
                   <div className="text-white text-xs flex items-center gap-1 mb-1">
-                    <Wind className="size-3" /> {Math.round(hourData.wind_kph)} km/h
+                    <Wind className="size-3" /> {Math.round(hourData.wind_kph)}{" "}
+                    km/h
                   </div>
                   <div className="text-white text-xs flex items-center gap-1 mb-1">
                     <Droplets className="size-3" /> {hourData.chance_of_rain}%
                   </div>
-                  <p className="text-white text-xs text-center">{hourData.condition.text}</p>
+                  <p className="text-white text-xs text-center">
+                    {hourData.condition.text}
+                  </p>
                 </div>
               ))
             ) : (
-            
               weatherData.map((dayData, index) => (
-                <div key={index} className="flex flex-col justify-center items-center p-4 bg-white/10 rounded-lg backdrop-blur-sm">
-                  <h3 className="font-semibold text-white text-sm mb-2">{dayData.day}</h3>
-                  <img src={dayData.condition.icon} alt={dayData.condition.text} width={60} height={60} className="mb-2" />
+                <div
+                  key={index}
+                  className="flex flex-col justify-center items-center p-4 bg-white/10 rounded-lg backdrop-blur-sm"
+                >
+                  <h3 className="font-semibold text-white text-sm mb-2">
+                    {dayData.day}
+                  </h3>
+                  <img
+                    src={dayData.condition.icon}
+                    alt={dayData.condition.text}
+                    width={60}
+                    height={60}
+                    className="mb-2"
+                  />
                   <div className="text-center mb-2">
-                    <h2 className="font-bold text-white text-lg">{Math.round(dayData.maxtemp_c)}°</h2>
-                    <h3 className="text-white/70 text-sm">{Math.round(dayData.mintemp_c)}°</h3>
+                    <h2 className="font-bold text-white text-lg">
+                      {Math.round(dayData.maxtemp_c)}°
+                    </h2>
+                    {/* <h3 className="text-white/70 text-sm">
+                      {Math.round(dayData.mintemp_c)}°
+                    </h3> */}
                   </div>
                   <div className="text-white text-xs flex items-center gap-1 mb-1">
-                    <Wind className="size-3" /> {Math.round(dayData.wind_kph)} km/h
+                    <Wind className="size-3" /> {Math.round(dayData.wind_kph)}{" "}
+                    km/h
                   </div>
                   <div className="text-white text-xs flex items-center gap-1 mb-1">
                     <Droplets className="size-3" /> {dayData.humidity}%
                   </div>
-                  <p className="text-white text-xs text-center">{dayData.condition.text}</p>
+                  <p className="text-white text-xs text-center">
+                    {dayData.condition.text}
+                  </p>
                 </div>
               ))
             )}
           </div>
 
-       
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
         </div>
       </div>

@@ -53,9 +53,9 @@ const LocationCard = ({
   };
 
   return (
-    <div className={`transition-all duration-700 ease-out transform  `}>
+  
       <div 
-        className={`relative w-full rounded-3xl p-1 transition-all duration-500 ease-out transform   
+        className={`relative w-full h-max rounded-3xl p-1 transition-all duration-500 ease-out transform   
           
         }`}
         onMouseEnter={() => setIsHovered(true)}
@@ -70,7 +70,7 @@ const LocationCard = ({
      
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"></div>
           
-          <div className="relative p-8">
+          <div className="relative h-[410px]  p-8">
          
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-2 group">
@@ -140,7 +140,7 @@ const LocationCard = ({
       </div>
 
      
-    </div>
+ 
   );
 };
 

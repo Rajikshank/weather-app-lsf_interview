@@ -24,7 +24,7 @@ const SearchBox = ({
   }
   return (
     <div className="flex items-center justify-center">
-      <div className="outline rounded p-1">
+      <div className="outline rounded-full  p-1">
         <form
           className="focus:outline-1 flex  relative lg:min-w-xl px-2  min-w-3xs"
           onSubmit={handleSumit}
