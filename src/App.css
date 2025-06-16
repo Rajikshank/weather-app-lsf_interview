@@ -132,4 +132,54 @@
   .bg-gradient-conic {
     background: conic-gradient(var(--tw-gradient-stops));
   }
+
+  
+ 
+.rain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
+
+.rain__drop {
+  position: absolute;
+
+  
+  left: calc(var(--x) * 100vw);
+  top:    calc(var(--y) * -50px);  
+
+  
+  width: 2px;
+  height: 8px;
+  background: rgba(161, 198, 204, 0.4);
+  border-radius: 9999px;
+
+ 
+  opacity: var(--opacity);
+  transform: scaleY(var(--scale));
+
+  
+  animation-name: drop;
+  animation-duration: var(--duration);
+  animation-delay: var(--delay);
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes drop {
+  0% {
+    opacity: var(--opacity);
+    transform: translateY(0) scaleY(var(--scale));
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) scaleY(var(--scale));
+  }
+}
+
+
+}
+
+
+ 
