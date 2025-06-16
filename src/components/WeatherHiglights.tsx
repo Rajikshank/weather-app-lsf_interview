@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { WeatherData } from '../types/weather';
+import type { WeatherData } from 'types'; 
 import { Sun, Cloud, Eye } from 'lucide-react';
 
 interface WeatherHighlightsProps {
@@ -8,6 +8,11 @@ interface WeatherHighlightsProps {
 }
 
 const WeatherHighlights: React.FC<WeatherHighlightsProps> = ({ data }) => {
+
+  if(!data ||!data.current){
+    return
+  }
+
   const getUVLevel = (uv: number) => {
     if (uv < 3) return { level: 'Low', color: 'text-green-400' };
     if (uv < 6) return { level: 'Moderate', color: 'text-yellow-400' };

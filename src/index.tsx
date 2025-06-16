@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
  
  
-import WeatherSearch from './components/WeatherSearch';
+
 import CurrentWeather from './components/CurrentWeather';
 import WeatherHighlights from './components/WeatherHiglights';
 import WeatherForecast from './components/WeatherForecast';
@@ -23,7 +23,7 @@ const Index = () => {
         },
         () => {
           // Fallback to a default location
-          fetchWeatherData('New York');
+          fetchWeatherData('Colombo');
         }
       );
     } else {
@@ -38,7 +38,7 @@ const Index = () => {
     try {
       const API_KEY = 'demo_key'; // Users will need to replace this
       const response = await fetch(
-        `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${location}&days=7&aqi=yes`
+        `https://api.weatherapi.com/v1/forecast.json?key=${import.meta.env.VITE_WEATHER_API_KEY}&q=${location}&days=7&aqi=yes`
       );
       
       if (!response.ok) {
@@ -71,6 +71,8 @@ const Index = () => {
     const condition = weatherData.current.condition.text.toLowerCase();
     const hour = new Date().getHours();
     const isNight = hour >= 19 || hour <= 6;
+
+    console.log("conditon inside gw function ",condition)
     
     if (condition.includes('sunny') || condition.includes('clear')) {
       return isNight 
@@ -88,6 +90,8 @@ const Index = () => {
     
     return 'from-slate-900 via-purple-900 to-indigo-900';
   };
+
+
 
   const getFloatingElements = () => {
     if (!weatherData) return null;
@@ -170,8 +174,8 @@ const Index = () => {
   };
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${getWeatherBackground()} transition-all duration-1000 relative overflow-hidden`}>
-      {/* Enhanced animated background elements */}
+    <div className={`min-h-screen bg-gradient-to-br ${getWeatherBackground()} transition-all duration-1000 relative overflow-hidden `}>
+   
       <div className="absolute inset-0 opacity-30">
         <motion.div 
           className="absolute top-1/4 left-1/4 w-72 h-72 bg-white/5 rounded-full blur-3xl" 
@@ -213,23 +217,17 @@ const Index = () => {
         />
       </div>
       
-      {/* Weather-specific background patterns */}
+ 
       {getBackgroundPattern()}
       
-      {/* Weather-specific floating elements */}
+    
       {getFloatingElements()}
       
-      {/* Enhanced glassmorphic overlay */}
+     
       <div className="absolute inset-0 bg-gradient-to-br from-white/8 via-white/3 to-transparent backdrop-blur-[2px]" />
       
       <div className="relative z-10 container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 max-w-7xl">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <WeatherSearch onSearch={handleSearch} loading={loading} />
-        </motion.div>
+      
 
         {error && (
           <motion.div
@@ -254,11 +252,11 @@ const Index = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-4 sm:space-y-6"
+            className="space-y-4  sm:space-y-6"
           >
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
               <div className="xl:col-span-2">
-                <CurrentWeather data={weatherData} />
+                <CurrentWeather data={weatherData}  onSearch={handleSearch} loading={loading}  />
               </div>
               <div className="xl:col-span-1">
                 <WeatherHighlights data={weatherData} />
@@ -275,7 +273,7 @@ const Index = () => {
   );
 };
 
-// Mock data for demo purposes
+ 
 const mockWeatherData = {
   location: {
     name: "New York",
