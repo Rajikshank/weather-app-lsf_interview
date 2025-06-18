@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Twitter, } from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
  
 
 const Footer = () => {
@@ -19,7 +19,7 @@ const Footer = () => {
               Developed By Rajikshan
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center ">
               <a 
                 href="https://github.com/Rajikshank" 
                 target="_blank" 
@@ -34,7 +34,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full"
               >
-                <Twitter className="w-4 h-4" />
+                <Linkedin className="w-4 h-4" />
               </a>
             </div>
           </div>

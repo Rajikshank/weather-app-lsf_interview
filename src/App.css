@@ -167,6 +167,34 @@
   animation-timing-function: linear;
 }
 
+.snow-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.snowflake {
+  position: absolute;
+  top: -50px;
+  border-radius: 50%;
+  animation-name: fall, fade;
+  animation-timing-function: linear, ease-in-out;
+  animation-iteration-count: infinite, infinite;
+}
+
+@keyframes fall {
+  0% { top: -50px; transform: scale(0); }
+  2% { transform: scale(1); }
+  100% { top: 100%; transform: scale(0); }
+}
+
+@keyframes fade {
+  0%, 2% { opacity: 1; }
+  90%, 100% { opacity: 0; }
+}
+
+
 @keyframes drop {
   0% {
     opacity: var(--opacity);
@@ -177,6 +205,9 @@
     transform: translateY(100vh) scaleY(var(--scale));
   }
 }
+
+
+
 
 
 }

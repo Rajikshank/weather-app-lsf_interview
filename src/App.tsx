@@ -9,6 +9,11 @@ import WeatherForecast from "./components/WeatherForecast";
 import Footer from "./components/Footer";
 import { useGetWeatherForeCast } from "./hooks/usefetchWeather";
 import RainEffect from "./components/RainEffect";
+import { data } from "framer-motion/client";
+import SnowEffect from "./components/SnowEffect";
+import rain from "@/assets/Rain_effect.json";
+import snow from "@/assets/Snow_effect.json";
+import Lottie from "react-lottie";
 
 const App = () => {
   // const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -140,37 +145,41 @@ const App = () => {
     const condition = weatherData.current.condition.text.toLowerCase();
 
     if (condition.includes("rain") || condition.includes("drizzle")) {
-      return <RainEffect dropCount={250} />;
-    } else if (condition.includes("snow")) {
+      // return <RainEffect dropCount={250} />;
+
       return (
-        <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          {[...Array(40)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-2 h-2 bg-white/50 rounded-full"
-              initial={{
-                y: -100,
-                x:
-                  Math.random() *
-                  (typeof window !== "undefined" ? window.innerWidth : 1200),
-              }}
-              animate={{
-                y:
-                  (typeof window !== "undefined" ? window.innerHeight : 800) +
-                  100,
-                x:
-                  Math.random() *
-                    (typeof window !== "undefined" ? window.innerWidth : 1200) +
-                  Math.sin(i) * 50,
-              }}
-              transition={{
-                duration: Math.random() * 3 + 2,
-                repeat: Infinity,
-                delay: Math.random() * 2,
-                ease: "linear",
-              }}
-            />
-          ))}
+        <div className="absolute">
+          <Lottie
+            options={{
+              loop: true,
+              autoplay: true,
+              animationData: rain,
+              rendererSettings: {
+                preserveAspectRatio: "xMidYMid slice",
+              },
+            }}
+            height={1400}
+            width={1800}
+          />
+        </div>
+      );
+    } else if (condition.includes("snow")) {
+      // return <SnowEffect />;
+
+      return (
+        <div className="absolute">
+          <Lottie
+            options={{
+              loop: true,
+              autoplay: true,
+              animationData: snow,
+              rendererSettings: {
+                preserveAspectRatio: "xMidYMid slice",
+              },
+            }}
+            height={1400}
+            width={1800}
+          />
         </div>
       );
     }
@@ -203,6 +212,14 @@ const App = () => {
 
     return null;
   };
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: rain,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   return (
     <div
@@ -211,6 +228,10 @@ const App = () => {
       {getBackgroundPattern()}
 
       {getFloatingElements()}
+      {/* <RainEffect dropCount={250} />
+      <SnowEffect /> */}
+
+        
 
       <div className="absolute inset-0 bg-gradient-to-br from-white/2 via-transparent to-black/10" />
 
