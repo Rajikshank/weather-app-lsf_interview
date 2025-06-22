@@ -122,7 +122,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
           </TabsList>
         </div>
 
-        <AnimatePresence mode="wait">
+        <div >
           <TabsContent value="today" className="mt-0">
             <motion.div
               key="today"
@@ -256,7 +256,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
               </div>
             </motion.div>
           </TabsContent>
-        </AnimatePresence>
+        </div>
       </Tabs>
     </motion.div>
   );
