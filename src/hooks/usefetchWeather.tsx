@@ -1,26 +1,20 @@
-import { useMemo } from "react";
-import type { WeatherData } from "../../types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-export interface UseGetWeatherResult {
-  data: WeatherData | null;
-  error: unknown;
-  isLoading: boolean;
-}
+import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 
-export function useGetWeatherForeCast(location: string) {
-  // const queryClient = useQueryClient();
-  const url = useMemo(() => {
-    const key = import.meta.env.VITE_WEATHER_API_KEY;
-    return `https://api.weatherapi.com/v1/forecast.json?key=${key}&q=${encodeURIComponent(
-      location
-    )}&days=7&aqi=no&alerts=no`;
-  }, [location]);
-
-  
+export function useGetWeatherForeCast(
+  location: string
+): UseQueryResult<any, Error> {
   const query = useQuery({
     queryKey: ["forecast", location],
+    staleTime: 5 * 60 * 1000,
+
     queryFn: async () => {
+      const key = import.meta.env.VITE_WEATHER_API_KEY;
+      const url = `https://api.weatherapi.com/v1/forecast.json?key=${key}&q=${encodeURIComponent(
+        location
+      )}&days=7&aqi=no&alerts=no`;
+
       const res = await fetch(url);
       if (!res.ok) {
         const errBody = await res.json();
@@ -32,46 +26,8 @@ export function useGetWeatherForeCast(location: string) {
         };
       }
 
-      // const recentLocations = localStorage.getItem("weather_recent_locations");
-
-      // if (recentLocations) {
-      //   localStorage.setItem(
-      //     "weather_recent_locations",
-      //     JSON.stringify([location, ...recentLocations].slice(0, 5))
-      //   );
-      // } else {
-      //   localStorage.setItem(
-      //     "weather_recent_locations",
-      //     JSON.stringify([location])
-      //   );
-      // }
       return res.json();
     },
-  });
-
-  const fetchWeatherData = useMutation({
-    mutationFn: async (location: string) => {
-      const res = await fetch(url);
-      if (!res.ok) {
-        const errBody = await res.json();
-        throw {
-          error: {
-            message: errBody.error?.message || res.statusText,
-            code: errBody.code,
-          },
-        };
-      }
-
-       
-      return res.json();
-    },
-    onSuccess:(data:WeatherData)=>{
-
-      const recentSearches=localStorage.getItem("weather_recent_locations");
-
-      localStorage.setItem("weather_recent_locations",JSON.stringify([data.location,...recentSearches]))
-
-    }
   });
 
   return query;

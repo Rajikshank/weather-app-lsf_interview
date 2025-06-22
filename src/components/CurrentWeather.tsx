@@ -71,8 +71,8 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
 
   const LoadingSkeleton = () => (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0}}
+      animate={{ opacity: 1  }}
       transition={{ duration: 0.5 }}
       className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 h-full transition-all duration-300 shadow-2xl overflow-hidden"
     >
@@ -224,10 +224,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
   if (loading) {
     return <LoadingSkeleton />;
   }
-
-  // if (error || !data) {
-  //   return <ErrorDisplay />;
-  // }
+ 
 
   if (!data) {
     return null;
@@ -235,8 +232,8 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      initial={{ opacity: 0,  }}
+      animate={{ opacity: 1, }}
       whileHover={{
         scale: 1.02,
         boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.25)",
@@ -257,7 +254,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
       </div>
 
       <div className="relative z-10 flex flex-col h-full">
-        <div className="flex flex-col md:flex-row items-start gap-6 lg:gap-0 lg:items-center justify-between mb-6">
+        <div className="flex flex-col md:flex-row items-start gap-2 lg:gap-0 lg:items-center justify-between mb-6">
           <div className="flex-1 min-h-[70px]  lg:min-h-[80px]  min-w-0">
             {onSearch ? (
               <LocationSearch
@@ -287,12 +284,12 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className=" lg:text-right ml-4"
+              className=" lg:text-right ml-1 lg:ml-4"
             >
-              <p className="text-white/80 text-xs  lg:text-sm drop-shadow-md">
+              <p className="font-roboto text-white/80 text-xs  lg:text-sm drop-shadow-md">
                 {formatDate(data.location.localtime)}
               </p>
-              <p className="text-white/80 text-sm drop-shadow-md">
+              <p className="font-roboto text-white/80 text-sm drop-shadow-md">
                 {formatTime(data.location.localtime)}
               </p>
             </motion.div>
@@ -302,7 +299,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
         {!error && (
           <>
             {" "}
-            <div className="flex-1 flex items-center justify-between">
+            <div className="flex-1 flex  items-center justify-between">
               <div className="space-y-2">
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
@@ -310,10 +307,10 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="flex items-baseline"
                 >
-                  <span className="text-4xl sm:text-6xl md:text-8xl font-thin text-white mr-2 drop-shadow-2xl">
+                  <span className="text-4xl font-roboto  sm:text-6xl md:text-8xl  text-white mr-2 drop-shadow-2xl">
                     {Math.round(data.current.temp_c)}
                   </span>
-                  <span className="text-xl sm:text-2xl md:text-3xl text-white/90 drop-shadow-lg">
+                  <span className="text-xl font-roboto sm:text-2xl md:text-3xl text-white/90 drop-shadow-lg">
                     °C
                   </span>
                 </motion.div>
@@ -322,7 +319,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="text-white/90 text-base sm:text-lg capitalize drop-shadow-md"
+                  className="text-white/90 font-roboto text-base sm:text-lg capitalize drop-shadow-md"
                 >
                   {data.current.condition.text}
                 </motion.p>
@@ -331,7 +328,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.4 }}
-                  className="text-white/80 drop-shadow-md"
+                  className="text-white/80 drop-shadow-md font-roboto"
                 >
                   Feels like {Math.round(data.current.feelslike_c)}°
                 </motion.p>

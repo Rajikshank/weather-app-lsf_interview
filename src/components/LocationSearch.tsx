@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, X, Clock, ChevronDown } from 'lucide-react';
-import { useLocationManager } from '@/hooks/useLocation';
- 
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, MapPin, X, Clock, ChevronDown } from "lucide-react";
+import { useLocationManager } from "@/hooks/useLocation";
+
 interface LocationSearchProps {
   locationName: string;
   locationRegion: string;
@@ -11,53 +11,62 @@ interface LocationSearchProps {
   loading: boolean;
 }
 
-const LocationSearch: React.FC< LocationSearchProps> = ({ 
-  locationName, 
-  locationRegion, 
-  locationCountry, 
-  onSearch, 
-  loading 
+const LocationSearch: React.FC<LocationSearchProps> = ({
+  locationName,
+  locationRegion,
+  locationCountry,
+  onSearch,
+  loading,
 }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [showRecentDropdown, setShowRecentDropdown] = useState(false);
-  const { recentLocations, addRecentLocation } = useLocationManager();
+  const { recentLocations } = useLocationManager();
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowRecentDropdown(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const sanitizeQuery = (query: string): string => {
+    if (typeof query !== "string") return "";
+
+    return query
+      .replace(/<[^>]*>/g, "") // Remove HTML tags
+      .replace(/[<>'"&]/g, "") // Remove dangerous characters
+      .replace(/[^\w\s\-.,()]/g, "") // Allow only alphanumeric, spaces, hyphens, periods, commas, parentheses
+      .replace(/\s+/g, " ") // Normalize spaces
+      .trim()
+      .substring(0, 200); // Reasonable limit for location queries
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      handleSearch(query.trim());
+      handleSearch(sanitizeQuery(query)); //sanitizing the query before searching
     }
   };
 
   const handleSearch = (searchQuery: string) => {
-    addRecentLocation({
-      name: locationName,
-      region: locationRegion,
-      country: locationCountry,
-      searchQuery
-    });
     onSearch(searchQuery);
-    setQuery('');
+    setQuery("");
     setIsSearchOpen(false);
     setShowRecentDropdown(false);
   };
 
   const handleCancel = () => {
-    setQuery('');
+    setQuery("");
     setIsSearchOpen(false);
     setShowRecentDropdown(false);
   };
@@ -77,15 +86,16 @@ const LocationSearch: React.FC< LocationSearchProps> = ({
     }
   };
 
-  const filteredRecentLocations = recentLocations.filter(location =>
-    query.length === 0 || 
-    location.name.toLowerCase().includes(query.toLowerCase()) ||
-    location.searchQuery.toLowerCase().includes(query.toLowerCase())
+  const filteredRecentLocations = recentLocations.filter(
+    (location) =>
+      query.length === 0 ||
+      location.name.toLowerCase().includes(query.toLowerCase()) ||
+      location.searchQuery.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <div >
+      <div>
         {!isSearchOpen ? (
           <motion.div
             key="location-display"
@@ -104,14 +114,14 @@ const LocationSearch: React.FC< LocationSearchProps> = ({
               <Search className="w-4 h-4 text-white/80" />
             </motion.div>
             <div className="min-w-0 flex-1">
-              <motion.h1 
-                className="text-xl sm:text-2xl md:text-3xl font-light text-white mb-1 drop-shadow-lg truncate group-hover:text-white/90 transition-colors duration-300"
+              <motion.h1
+                className="font-roboto text-xl sm:text-2xl md:text-3xl font-medium text-white mb-1 drop-shadow-lg truncate group-hover:text-white/90 transition-colors duration-300"
                 whileHover={{ x: 2 }}
               >
                 {locationName}
               </motion.h1>
-              <motion.p 
-                className="text-white/80 text-sm drop-shadow-md truncate group-hover:text-white/70 transition-colors duration-300"
+              <motion.p
+                className="font-roboto font-light text-white/80 text-sm drop-shadow-md truncate group-hover:text-white/70 transition-colors duration-300"
                 whileHover={{ x: 2 }}
               >
                 <MapPin className="w-3 h-3 inline mr-1" />
@@ -142,17 +152,21 @@ const LocationSearch: React.FC< LocationSearchProps> = ({
                 autoFocus
               />
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
-              
+
               {recentLocations.length > 0 && query.length === 0 && (
                 <button
                   type="button"
                   onClick={() => setShowRecentDropdown(!showRecentDropdown)}
                   className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 hover:text-white/80 transition-colors"
                 >
-                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showRecentDropdown ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-200 ${
+                      showRecentDropdown ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
               )}
-              
+
               {loading && (
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -161,7 +175,11 @@ const LocationSearch: React.FC< LocationSearchProps> = ({
                 >
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                     className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                   />
                 </motion.div>
@@ -210,7 +228,7 @@ const LocationSearch: React.FC< LocationSearchProps> = ({
                 )}
               </AnimatePresence>
             </div>
-            
+
             <motion.button
               type="button"
               onClick={handleCancel}

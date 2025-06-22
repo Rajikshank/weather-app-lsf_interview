@@ -1,12 +1,7 @@
 import { useState, useEffect } from 'react';
+import type { RecentLocation } from 'types';
 
-interface RecentLocation {
-  name: string;
-  region: string;
-  country: string;
-  searchQuery: string;
-  timestamp: number;
-}
+
 
 export const useLocationManager = () => {
   const [recentLocations, setRecentLocations] = useState<RecentLocation[]>([]);
@@ -23,18 +18,7 @@ export const useLocationManager = () => {
     }
   }, []);
 
-  const addRecentLocation = (location: Omit<RecentLocation, 'timestamp'>) => {
-    const newLocation = { ...location, timestamp: Date.now() };
-    
-    setRecentLocations(prev => {
-      const filtered = prev.filter(loc => 
-        loc.name !== location.name || loc.region !== location.region
-      );
-      const updated = [newLocation, ...filtered].slice(0, 5); 
-      localStorage.setItem('weather_recent_locations', JSON.stringify(updated));
-      return updated;
-    });
-  };
+
 
   const getDefaultLocation = async (): Promise<string> => {
     // First, try to get last searched location
@@ -64,7 +48,7 @@ export const useLocationManager = () => {
 
   return {
     recentLocations,
-    addRecentLocation,
+
     getDefaultLocation
   };
 };

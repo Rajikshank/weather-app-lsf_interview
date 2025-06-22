@@ -1,26 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useLocationManager } from "./hooks/useLocation";
-import type { WeatherData } from "types";
+import type { RecentLocation } from "types";
 import CurrentWeather from "./components/CurrentWeather";
 import WeatherHighlights from "./components/WeatherHiglights";
 import WeatherForecast from "./components/WeatherForecast";
 import Footer from "./components/Footer";
 import { useGetWeatherForeCast } from "./hooks/usefetchWeather";
-import RainEffect from "./components/RainEffect";
-import { data } from "framer-motion/client";
-import SnowEffect from "./components/SnowEffect";
+
 import rain from "@/assets/Rain_effect.json";
 import snow from "@/assets/Snow_effect.json";
 import Lottie from "react-lottie";
 
 const App = () => {
-  // const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
-  const { addRecentLocation, getDefaultLocation } = useLocationManager();
-  const [location, setLocation] = useState<string>("Colombo");
+  const {  getDefaultLocation } = useLocationManager();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [location, setLocation] = useState<string | null>("colombo");
 
   const {
     data: weatherData,
@@ -28,66 +24,105 @@ const App = () => {
     isLoading: loading,
   } = useGetWeatherForeCast(location);
 
-  // Get user's location on mount
   useEffect(() => {
     const initializeLocation = async () => {
       try {
-        const defaultLocation = await getDefaultLocation();
-        setLocation(() => defaultLocation);
+        if (localStorage.getItem("weather_recent_locations") === null) {
+          console.log("getting default loc");
+          const defaultLocation = await getDefaultLocation();
+
+          setLocation(() => defaultLocation);
+        }
       } catch (error) {
         console.error("Error getting default location:", error);
-        // fetchWeatherData("Colombo");
 
-        setLocation(() => "colombo");
+        setLocation(() => "Colombo");
       }
     };
 
     initializeLocation();
   }, []);
 
-  // const fetchWeatherData = async (location: string) => {
-  //   setLoading(true);
-  //   setError(null);
+  async function playAudio(src: string) {
+    audioRef.current = null;
+    const audio = new Audio(src);
+    audioRef.current = audio;
 
-  //   try {
-  //     const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
-  //     const response = await fetch(
-  //       `https://api.weatherapi.com/v1/forecast.json?key=${API_KEY}&q=${location}&days=7&aqi=yes`
-  //     );
+    audio.loop = true;
+    audio.play().catch((err) => {
+      console.error("Audio play failed:", err);
+    });
+  }
 
-  //     if (!response.ok) {
-  //       // If API call fails,
-  //       console.log("Using mock data for demonstration");
-  //       const error = await response.json();
-  //       setError(() => error);
-  //       return;
-  //     }
+  useEffect(() => {
+    const condition = weatherData?.current.condition.text.toLowerCase() || "";
+    const audio = audioRef.current;
 
-  //     const data = await response.json();
-  //     setWeatherData(data);
+    if (weatherData && location) {
+      const recentLocations: RecentLocation[] =
+        JSON.parse(localStorage.getItem("weather_recent_locations")) ?? [];
 
-  //     // Add to recent locations
-  //     addRecentLocation({
-  //       name: data.location.name,
-  //       region: data.location.region,
-  //       country: data.location.country,
-  //       searchQuery: location,
-  //     });
-  //   } catch (err) {
-  //     console.log("Using mock data for demonstration");
+      const filteredRecentLocation = recentLocations.filter(
+        (item) =>
+          item.name !== weatherData.location.name ||
+          item.region !== weatherData.location.region
+      );
 
-  //     // Add to recent locations with mock data
-  //     setError(()=>"something went wrong...")
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      console.log("saving the location ", weatherData.location.name,location);
+      localStorage.setItem(
+        "weather_recent_locations",
+        JSON.stringify([
+          {
+            name: weatherData.location.name,
+
+            region: weatherData.location.region,
+            country: weatherData.location.country,
+            searchQuery: location,
+            timestamp: Date.now(),
+          },
+          ...filteredRecentLocation,
+        ].slice(0,5))
+      );
+    }
+
+    if (condition.includes("sunny") || condition.includes("clear")) {
+      if (audio) {
+        audio.src = "";
+      }
+   
+      return;
+    } else if (
+      condition.includes("rain") ||
+      condition.includes("drizzle") ||
+      condition.includes("storm")
+    ) {
+      if (audio) {
+        audio.src = "";
+      }
+      playAudio("/rainmusic.mp3");
+      return;
+    } else if (condition.includes("snow") || condition.includes("blizzard")) {
+      playAudio("/snowmusic.mp3");
+      return;
+    } else if (condition.includes("cloud") || condition.includes("overcast")) {
+      if (audio) {
+        audio.src = "";
+      }
+  
+
+      return;
+    } else if (condition.includes("mist") || condition.includes("fog")) {
+      return;
+    }
+
+    return;
+  }, [weatherData]);
 
   const handleSearch = (location: string) => {
     setLocation(() => location);
   };
 
-  const getWeatherBackground = async () => {
+  const getWeatherBackground = () => {
     if (!weatherData) return "from-gray-900 via-gray-800 to-gray-900";
 
     const condition = weatherData.current.condition.text.toLowerCase();
@@ -103,11 +138,6 @@ const App = () => {
       condition.includes("drizzle") ||
       condition.includes("storm")
     ) {
-      const audio=new Audio("/rainmusic.mp3") 
-
-      audio.loop=true
-      audio.play()
-
       return "from-gray-950 via-black to-gray-900";
     } else if (condition.includes("snow") || condition.includes("blizzard")) {
       return "from-slate-900 via-gray-800 to-slate-900";
@@ -216,14 +246,6 @@ const App = () => {
     }
 
     return null;
-  };
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: rain,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
   };
 
   return (

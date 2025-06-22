@@ -100,7 +100,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
         boxShadow: "0 20px 40px -12px rgba(255, 255, 255, 0.15)"
       }}
       transition={{ duration: 0.4, delay: 0.3 }}
-      className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-4 sm:p-6 hover:bg-white/8 hover:border-white/20 transition-all duration-300 shadow-2xl w-full relative"
+      className="bg-white/5 min-h-[320px]   backdrop-blur-2xl border border-white/10 rounded-3xl p-4 sm:p-6 hover:bg-white/8 hover:border-white/20 transition-all duration-300 shadow-2xl w-full relative"
     >
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -132,7 +132,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <div className="overflow-x-auto overflow-y-visible py-2 lg:overflow-hidden">
+              <div className="overflow-x-auto overflow-y-hidden py-2 lg:overflow-hidden">
                 <div className="flex gap-3 min-w-max px-1">
                   {upcomingHours.slice(0,10).map((hour, index) => (
                     <motion.div
@@ -195,7 +195,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <div className="overflow-x-auto overflow-y-visible py-2 lg:overflow-hidden">
+              <div className="overflow-x-auto overflow-y-hidden py-2 lg:overflow-hidden">
                 <div className="flex gap-3 min-w-max px-1">
                   {forecast.map((day, index) => (
                     <motion.div

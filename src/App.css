@@ -1,7 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+
+
+ 
+
+@theme {
+  --font-roboto: "Roboto", sans-serif; 
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -74,8 +82,6 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-
-  
 }
 
 .dark {
@@ -118,99 +124,17 @@
   }
   body {
     @apply bg-background text-foreground;
-   @apply bg-gradient-to-tr from-slate-800 to-slate-600
+    @apply bg-gradient-to-tr from-slate-800 to-slate-600;
+    @apply font-roboto
   }
 }
-
- 
 
 @layer utilities {
   .bg-gradient-radial {
     background: radial-gradient(circle, var(--tw-gradient-stops));
   }
-  
+
   .bg-gradient-conic {
     background: conic-gradient(var(--tw-gradient-stops));
   }
-
-  
- 
-.rain {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
 }
-
-.rain__drop {
-  position: absolute;
-
-  
-  left: calc(var(--x) * 100vw);
-  top:    calc(var(--y) * -50px);  
-
-  
-  width: 2px;
-  height: 8px;
-  background: rgba(161, 198, 204, 0.4);
-  border-radius: 9999px;
-
- 
-  opacity: var(--opacity);
-  transform: scaleY(var(--scale));
-
-  
-  animation-name: drop;
-  animation-duration: var(--duration);
-  animation-delay: var(--delay);
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-}
-
-.snow-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.snowflake {
-  position: absolute;
-  top: -50px;
-  border-radius: 50%;
-  animation-name: fall, fade;
-  animation-timing-function: linear, ease-in-out;
-  animation-iteration-count: infinite, infinite;
-}
-
-@keyframes fall {
-  0% { top: -50px; transform: scale(0); }
-  2% { transform: scale(1); }
-  100% { top: 100%; transform: scale(0); }
-}
-
-@keyframes fade {
-  0%, 2% { opacity: 1; }
-  90%, 100% { opacity: 0; }
-}
-
-
-@keyframes drop {
-  0% {
-    opacity: var(--opacity);
-    transform: translateY(0) scaleY(var(--scale));
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(100vh) scaleY(var(--scale));
-  }
-}
-
-
-
-
-
-}
-
-
- 

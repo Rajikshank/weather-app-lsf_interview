@@ -29,7 +29,7 @@ const Footer = () => {
                 <Github className="w-4 h-4" />
               </a>
               <a 
-                href="https://twitter.com" 
+                href="https://www.linkedin.com/in/krishnakumar-rajikshan-4853861a5/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full"

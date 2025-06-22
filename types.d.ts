@@ -110,3 +110,11 @@ export interface HourlyForecast {
   };
   chance_of_rain: number;
 }
+
+interface RecentLocation {
+  name: string;
+  region: string;
+  country: string;
+  searchQuery: string;
+  timestamp: number;
+}
