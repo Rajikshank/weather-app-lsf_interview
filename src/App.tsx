@@ -103,7 +103,7 @@ const App = () => {
       condition.includes("drizzle") ||
       condition.includes("storm")
     ) {
-      const audio=new Audio("/rainmusic.wav") 
+      const audio=new Audio("/rainmusic.mp3") 
 
       audio.loop=true
       audio.play()
