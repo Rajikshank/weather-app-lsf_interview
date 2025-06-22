@@ -62,21 +62,16 @@ export function useGetWeatherForeCast(location: string) {
         };
       }
 
-      // const recentLocations = localStorage.getItem("weather_recent_locations");
-
-      // if (recentLocations) {
-      //   localStorage.setItem(
-      //     "weather_recent_locations",
-      //     JSON.stringify([location, ...recentLocations].slice(0, 5))
-      //   );
-      // } else {
-      //   localStorage.setItem(
-      //     "weather_recent_locations",
-      //     JSON.stringify([location])
-      //   );
-      // }
+       
       return res.json();
     },
+    onSuccess:(data:WeatherData)=>{
+
+      const recentSearches=localStorage.getItem("weather_recent_locations");
+
+      localStorage.setItem("weather_recent_locations",JSON.stringify([data.location,...recentSearches]))
+
+    }
   });
 
   return query;

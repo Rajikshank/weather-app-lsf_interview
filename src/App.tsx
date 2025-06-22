@@ -87,7 +87,7 @@ const App = () => {
     setLocation(() => location);
   };
 
-  const getWeatherBackground = () => {
+  const getWeatherBackground = async () => {
     if (!weatherData) return "from-gray-900 via-gray-800 to-gray-900";
 
     const condition = weatherData.current.condition.text.toLowerCase();
@@ -103,6 +103,11 @@ const App = () => {
       condition.includes("drizzle") ||
       condition.includes("storm")
     ) {
+      const audio=new Audio("/rainmusic.wav") 
+
+      audio.loop=true
+      audio.play()
+
       return "from-gray-950 via-black to-gray-900";
     } else if (condition.includes("snow") || condition.includes("blizzard")) {
       return "from-slate-900 via-gray-800 to-slate-900";
@@ -231,7 +236,36 @@ const App = () => {
       {/* <RainEffect dropCount={250} />
       <SnowEffect /> */}
 
-        
+      {/* <div className="absolute">
+          <Lottie
+            options={{
+              loop: true,
+              autoplay: true,
+              animationData: rain,
+              rendererSettings: {
+                preserveAspectRatio: "xMidYMid slice",
+              },
+            }}
+            height={1400}
+            width={1800}
+          />
+        </div>
+
+              <div className="absolute ">
+          <Lottie
+            options={{
+            
+              loop: true,
+              autoplay: true,
+              animationData: snow,
+              rendererSettings: {
+                preserveAspectRatio: "xMidYMid slice"
+              },
+            }}
+            height={1400}
+            width={1800}
+          />
+        </div> */}
 
       <div className="absolute inset-0 bg-gradient-to-br from-white/2 via-transparent to-black/10" />
 

@@ -85,7 +85,7 @@ const LocationSearch: React.FC< LocationSearchProps> = ({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <AnimatePresence mode="wait">
+      <div >
         {!isSearchOpen ? (
           <motion.div
             key="location-display"
@@ -222,7 +222,7 @@ const LocationSearch: React.FC< LocationSearchProps> = ({
             </motion.button>
           </motion.form>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 };

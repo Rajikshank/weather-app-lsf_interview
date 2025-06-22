@@ -258,7 +258,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
 
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex flex-col md:flex-row items-start gap-6 lg:gap-0 lg:items-center justify-between mb-6">
-          <div className="flex-1   lg:min-h-[80px]  min-w-0">
+          <div className="flex-1 min-h-[70px]  lg:min-h-[80px]  min-w-0">
             {onSearch ? (
               <LocationSearch
                 locationName={data.location.name}
