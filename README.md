@@ -33,7 +33,8 @@
 * ⚡ **Caching with TanStack Query** — Cache API responses for 5 minutes to reduce network calls and speed up UI.
 * 📈 **7-Day Forecast** — View today's weather highlights and upcoming week’s forecast.
 * 🎞️ **Framer Motion Transitions** — Subtle animations for a polished feel.
-
+* 🌡️ **Weather Highlights** — Shows current Day's Weather details light uv Index, cloud cover and visibility with atractive ui
+c
 ---
 
 ## 📸 Demo & Screenshots
