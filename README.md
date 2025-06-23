@@ -50,7 +50,7 @@ https://github.com/user-attachments/assets/99a8c6ce-7b05-4de1-90ed-571c239a365a
 
 ### 🛠️ Prerequisites
 
-* Node.js (v19 or later)
+* Node.js (v20 or later)
 * npm or yarn
 
 ### 📦 Installation
