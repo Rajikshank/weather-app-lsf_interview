@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useLocationManager } from "./hooks/useLocation";
-import type { RecentLocation } from "types";
+import type { RecentLocation, WeatherError } from "types";
 import CurrentWeather from "./components/CurrentWeather";
 import WeatherHighlights from "./components/WeatherHiglights";
 import WeatherForecast from "./components/WeatherForecast";
@@ -14,7 +14,7 @@ import snow from "@/assets/Snow_effect.json";
 import Lottie from "react-lottie";
 
 const App = () => {
-  const {  getDefaultLocation } = useLocationManager();
+  const { getDefaultLocation } = useLocationManager();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [location, setLocation] = useState<string | null>("colombo");
 
@@ -68,20 +68,22 @@ const App = () => {
           item.region !== weatherData.location.region
       );
 
-      console.log("saving the location ", weatherData.location.name,location);
+      console.log("saving the location ", weatherData.location.name, location);
       localStorage.setItem(
         "weather_recent_locations",
-        JSON.stringify([
-          {
-            name: weatherData.location.name,
+        JSON.stringify(
+          [
+            {
+              name: weatherData.location.name,
 
-            region: weatherData.location.region,
-            country: weatherData.location.country,
-            searchQuery: location,
-            timestamp: Date.now(),
-          },
-          ...filteredRecentLocation,
-        ].slice(0,5))
+              region: weatherData.location.region,
+              country: weatherData.location.country,
+              searchQuery: location,
+              timestamp: Date.now(),
+            },
+            ...filteredRecentLocation,
+          ].slice(0, 5)
+        )
       );
     }
 
@@ -89,7 +91,7 @@ const App = () => {
       if (audio) {
         audio.src = "";
       }
-   
+
       return;
     } else if (
       condition.includes("rain") ||
@@ -108,13 +110,18 @@ const App = () => {
       if (audio) {
         audio.src = "";
       }
-  
 
       return;
     } else if (condition.includes("mist") || condition.includes("fog")) {
+      if (audio) {
+        audio.src = "";
+      }
       return;
     }
 
+    if (audio) {
+      audio.src = "";
+    }
     return;
   }, [weatherData]);
 
@@ -292,111 +299,55 @@ const App = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-white/2 via-transparent to-black/10" />
 
       <div className="relative z-10 flex-1 container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 max-w-7xl">
-        {loading ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-4 sm:space-y-6"
-          >
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-              <motion.div
-                className="xl:col-span-2"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-              >
-                <CurrentWeather
-                  data={null}
-                  loading={true}
-                  onSearch={handleSearch}
-                  searchLoading={loading}
-                />
-              </motion.div>
-              <motion.div
-                className="xl:col-span-1"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                <WeatherHighlights data={null} loading={true} />
-              </motion.div>
-            </div>
-
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+          className="space-y-4 sm:space-y-6"
+        >
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
             <motion.div
-              className="w-full"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
+              className="xl:col-span-2"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <WeatherForecast forecast={null} loading={true} />
-            </motion.div>
-          </motion.div>
-        ) : weatherData ? (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="space-y-4 sm:space-y-6"
-          >
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
-              <motion.div
-                className="xl:col-span-2"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-              >
-                <CurrentWeather
-                  data={weatherData}
-                  loading={false}
-                  onSearch={handleSearch}
-                  searchLoading={loading}
-                  error={error}
-                />
-              </motion.div>
-              <motion.div
-                className="xl:col-span-1"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                <WeatherHighlights data={weatherData} loading={false} />
-              </motion.div>
-            </div>
-
-            <motion.div
-              className="w-full"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              <WeatherForecast
-                forecast={weatherData.forecast.forecastday}
-                loading={false}
+              <CurrentWeather
+                data={weatherData}
+                loading={loading}
+                onSearch={handleSearch}
+                searchLoading={loading}
+                error={error }
+                audioref={audioRef}
               />
             </motion.div>
-          </motion.div>
-        ) : (
-          <div>
-            <motion.div className="flex h-svh items-center justify-center flex-col">
-              <motion.h2
-                className="text-2xl font-semibold text-white"
-                initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              >
-                Something went wrong....
-              </motion.h2>
-
-              <motion.h2
-                className="text-white"
-                initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              >
-                Refresh the Page Again...
-              </motion.h2>
+            <motion.div
+              className="xl:col-span-1"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <WeatherHighlights
+                data={weatherData}
+                loading={loading}
+                error={error}
+              />
             </motion.div>
           </div>
-        )}
+
+          <motion.div
+            className="w-full"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            <WeatherForecast
+              forecast={weatherData?.forecast.forecastday}
+              loading={loading}
+              error={error}
+            />
+          </motion.div>
+        </motion.div>
       </div>
 
       <Footer />

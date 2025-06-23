@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect, useState, type RefObject } from "react";
 import { motion } from "framer-motion";
-import type { WeatherData } from "types";
+import type { WeatherData, WeatherError } from "types";
 import { Skeleton } from "./ui/skeleton";
 import LocationSearch from "./LocationSearch";
-
+import weatherIconMap from "@/lib/getWeatherIcon";
+import { AlertTriangle, Megaphone, MegaphoneOff } from "lucide-react";
 
 interface CurrentWeatherProps {
   data: WeatherData | null;
   loading?: boolean;
   onSearch?: (location: string) => void;
   searchLoading?: boolean;
-  error?: Error | null;
+  error?: Error | WeatherError | null;
+  audioref?: RefObject<HTMLAudioElement>;
 }
 
 //current weather component
@@ -21,7 +23,18 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
   onSearch,
   searchLoading = false,
   error = null,
+  audioref,
 }) => {
+  const [muted, setMuted] = useState<boolean>(false);
+
+
+  useEffect(()=>{
+
+    setMuted(()=>false)
+  },[data])
+
+
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -71,8 +84,8 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
 
   const LoadingSkeleton = () => (
     <motion.div
-      initial={{ opacity: 0}}
-      animate={{ opacity: 1  }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 h-full transition-all duration-300 shadow-2xl overflow-hidden"
     >
@@ -171,69 +184,80 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
     </motion.div>
   );
 
-  // const ErrorDisplay = () => (
-  //   <motion.div
-  //     initial={{ opacity: 0, scale: 0.95 }}
-  //     animate={{ opacity: 1, scale: 1 }}
-  //     transition={{ duration: 0.5 }}
-  //     className="relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 h-full transition-all duration-300 shadow-2xl overflow-hidden"
-  //   >
-  //     <div className="absolute inset-0 rounded-3xl overflow-hidden">
-  //       <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-transparent to-red-800/10" />
-  //       <div className="absolute inset-0 backdrop-blur-[1px] bg-white/5" />
-  //     </div>
+  const ErrorDisplay = () => (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+      className="relative bg-white/5 ring-1 ring-red-500 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 lg:h-[620px] transition-all duration-300 shadow-2xl overflow-hidden"
+    >
+      <div className="absolute inset-0 rounded-3xl overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-red-900/20 via-transparent to-red-800/10" />
+        <div className="absolute inset-0 backdrop-blur-[1px] bg-white/5" />
+      </div>
 
-  //     <div className="relative z-10 flex flex-col h-full items-center justify-center text-center space-y-4">
-  //       <motion.div
-  //         initial={{ scale: 0 }}
-  //         animate={{ scale: 1 }}
-  //         transition={{ duration: 0.5, delay: 0.2 }}
-  //         className="p-4 rounded-full bg-red-500/20 backdrop-blur-md border border-red-500/30"
-  //       >
-  //         <AlertTriangle className="w-8 h-8 text-red-400" />
-  //       </motion.div>
+      <div className="relative z-10 flex flex-col h-full items-center justify-center text-center space-y-4">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="p-4 rounded-full bg-red-500/20 backdrop-blur-md border border-red-500/30"
+        >
+          <AlertTriangle className="w-8 h-8 text-red-400" />
+        </motion.div>
 
-  //       <motion.div
-  //         initial={{ opacity: 0, y: 20 }}
-  //         animate={{ opacity: 1, y: 0 }}
-  //         transition={{ duration: 0.5, delay: 0.3 }}
-  //       >
-  //         <h3 className="text-lg font-medium text-white mb-2">
-  //           Weather Unavailable
-  //         </h3>
-  //         <p className="text-white/70 text-sm max-w-md">
-  //           {error || "Unable to fetch weather data. Please try again."}
-  //         </p>
-  //       </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <h3 className="text-lg font-medium text-white mb-2">
+            Weather Unavailable
+          </h3>
+          <p className="text-white/70 text-sm max-w-md">
+            {(error && "error" in error && error.error?.message) ||
+              (error && "message" in error && error.message) ||
+              "Unable to fetch weather data. Please try again."}
+          </p>
+        </motion.div>
 
-  //       {onSearch && (
-  //         <motion.button
-  //           initial={{ opacity: 0, y: 20 }}
-  //           animate={{ opacity: 1, y: 0 }}
-  //           transition={{ duration: 0.5, delay: 0.4 }}
-  //           onClick={() => onSearch('"Colombo')}
-  //           className="px-6 py-2 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 rounded-full text-white text-sm transition-all duration-300 backdrop-blur-md"
-  //         >
-  //           Try Again
-  //         </motion.button>
-  //       )}
-  //     </div>
-  //   </motion.div>
-  // );
+        {onSearch && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            onClick={() => onSearch('"Colombo')}
+            className="px-6 py-2 cursor-pointer bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 rounded-full text-white text-sm transition-all duration-300 backdrop-blur-md"
+          >
+            Try Again
+          </motion.button>
+        )}
+      </div>
+    </motion.div>
+  );
 
   if (loading) {
     return <LoadingSkeleton />;
   }
- 
 
-  if (!data) {
-    return null;
+  if (!data || error) {
+    return <ErrorDisplay />;
+  }
+
+  function handleMute() {
+    if (audioref.current) {
+      const audio = audioref.current;
+
+      audio.muted = audio.muted ? false : true;
+
+      setMuted(() => (audio.muted ? true : false));
+    }
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0,  }}
-      animate={{ opacity: 1, }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       whileHover={{
         scale: 1.02,
         boxShadow: "0 25px 50px -12px rgba(255, 255, 255, 0.25)",
@@ -332,20 +356,40 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                 >
                   Feels like {Math.round(data.current.feelslike_c)}°
                 </motion.p>
+
+                <button onClick={()=>handleMute()} className="cursor-pointer hover:bg-white/20 hover:scale-110 hover:rounded-full p-1">
+                  <div className="transition-all duration-500 ease-in-out">
+                    {!muted ? (
+                      <Megaphone className="text-white size-6" />
+                    ) : (
+                      <MegaphoneOff className="text-white/80 size-6" />
+                    )}
+                  </div>
+                </button>
               </div>
 
               <motion.div
                 initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                whileHover={{ scale: 1.1, rotate: 5 }}
+                whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="flex-shrink-0"
               >
                 <img
-                  src={`https:${data.current.condition.icon}`}
+                  src={
+                    weatherIconMap[data.current.condition.code][
+                      data.current.is_day === 1 ? "day" : "night"
+                    ]
+                  }
                   alt={data.current.condition.text}
                   className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 drop-shadow-2xl"
                 />
+
+                {/* <img
+                  src={`https:${data.current.condition.icon}`}
+                  alt={data.current.condition.text}
+                  className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 drop-shadow-2xl"
+                /> */}
               </motion.div>
             </div>
             <motion.div
@@ -359,7 +403,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                   scale: 1.05,
                   backgroundColor: "rgba(255, 255, 255, 0.15)",
                 }}
-                className="text-center p-2 sm:p-3 rounded-xl transition-all duration-200 backdrop-blur-sm bg-white/5"
+                className="text-center ring-1 ring-white/50 p-2 sm:p-3 rounded-xl transition-all duration-200 backdrop-blur-sm bg-white/5"
               >
                 <p className="text-white/80 text-xs uppercase tracking-wider mb-1 drop-shadow-sm">
                   Wind
@@ -377,7 +421,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                   scale: 1.05,
                   backgroundColor: "rgba(255, 255, 255, 0.15)",
                 }}
-                className="text-center p-2 sm:p-3 rounded-xl transition-all duration-200 backdrop-blur-sm bg-white/5"
+                className="text-center ring-1 ring-white/50 p-2 sm:p-3 rounded-xl transition-all duration-200 backdrop-blur-sm bg-white/5"
               >
                 <p className="text-white/80 text-xs uppercase tracking-wider mb-1 drop-shadow-sm">
                   Humidity
@@ -392,7 +436,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                   scale: 1.05,
                   backgroundColor: "rgba(255, 255, 255, 0.15)",
                 }}
-                className="text-center p-2 sm:p-3 rounded-xl transition-all duration-200 backdrop-blur-sm bg-white/5"
+                className="text-center ring-1 ring-white/50 p-2 sm:p-3 rounded-xl transition-all duration-200 backdrop-blur-sm bg-white/5"
               >
                 <p className="text-white/80 text-xs uppercase tracking-wider mb-1 drop-shadow-sm">
                   Pressure
@@ -405,18 +449,25 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
           </>
         )}
 
-        {error &&
-          (  (
-            <motion.div className="flex flex-col my-auto items-center">
+        {error && (
+          <motion.div className="flex flex-col my-auto items-center">
+            <motion.h2
+              className="text-white font-semibold text-2xl"
+              initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            >
+              Something went wrong
+            </motion.h2>
 
-              
-              <motion.h2  className="text-white font-semibold text-2xl"  initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}>Something went wrong</motion.h2>
-
-              <motion.h2 className="text-white font-semibold"  initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}>Please Try Again</motion.h2>
-            </motion.div>
-          ))}
+            <motion.h2
+              className="text-white font-semibold"
+              initial={{ opacity: 0, scale: 0.8, rotate: 0 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            >
+              Please Try Again
+            </motion.h2>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );

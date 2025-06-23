@@ -1,40 +1,50 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
- 
-import { Skeleton } from './ui/skeleton';
-import type { ForecastDay } from 'types';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+
+import { Skeleton } from "./ui/skeleton";
+import type { ForecastDay } from "types";
+import { AlertCircle } from "lucide-react";
 
 interface WeatherForecastProps {
   forecast: ForecastDay[] | null;
   loading?: boolean;
+  error: Error | null;
 }
 
 //weather forecast compoenent
 
-const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = false }) => {
-  const [activeTab, setActiveTab] = useState('today');
+const WeatherForecast: React.FC<WeatherForecastProps> = ({
+  forecast,
+  loading = false,
+  error,
+}) => {
+  const [activeTab, setActiveTab] = useState("today");
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     if (date.toDateString() === today.toDateString()) {
-      return 'Today';
+      return "Today";
     } else if (date.toDateString() === tomorrow.toDateString()) {
-      return 'Tomorrow';
+      return "Tomorrow";
     } else {
-      return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      return date.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
     }
   };
 
   const formatHour = (timeString: string) => {
     const date = new Date(timeString);
-    return date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      hour12: true 
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      hour12: true,
     });
   };
 
@@ -47,7 +57,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
         <Skeleton className="h-6 w-40 bg-white/20 rounded-lg" />
-        
+
         <div className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-lg p-1 w-full sm:w-auto">
           <div className="flex">
             <Skeleton className="h-8 w-20 bg-white/15 rounded mr-1" />
@@ -83,38 +93,57 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
     return <LoadingSkeleton />;
   }
 
-  if (!forecast || forecast.length === 0) {
-    return null;
+  if (!forecast || forecast.length === 0 || error) {
+    return (
+      <motion.div
+      
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{
+        scale: 1.005,
+       
+      }}
+      transition={{ duration: 0.4, delay: 0.3 }}
+      className="bg-white/5 min-h-[320px] ring-1 ring-red-500 flex justify-center items-center  backdrop-blur-2xl border border-white/10 rounded-3xl p-4 sm:p-6 hover:bg-white/8 hover:border-white/20 transition-all duration-300 shadow-2xl w-full relative">
+     
+          <AlertCircle className="size-32 animate-pulse  text-red-500 "/>{" "}
+      
+      </motion.div>
+    );
   }
 
   const todaysForecast = forecast[0]?.hour || [];
   const currentHour = new Date().getHours();
-  const upcomingHours = todaysForecast.filter((hour, index) => index >= currentHour).slice(0, 12);
+  const upcomingHours = todaysForecast
+    .filter((hour, index) => index >= currentHour)
+    .slice(0, 12);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ 
+      whileHover={{
         scale: 1.005,
-        boxShadow: "0 20px 40px -12px rgba(255, 255, 255, 0.15)"
+        boxShadow: "0 20px 40px -12px rgba(255, 255, 255, 0.15)",
       }}
       transition={{ duration: 0.4, delay: 0.3 }}
       className="bg-white/5 min-h-[320px]   backdrop-blur-2xl border border-white/10 rounded-3xl p-4 sm:p-6 hover:bg-white/8 hover:border-white/20 transition-all duration-300 shadow-2xl w-full relative"
     >
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-          <h2 className="text-lg sm:text-xl font-semibold text-white">Weather Forecast</h2>
-          
+          <h2 className="text-lg sm:text-xl font-semibold text-white">
+            Weather Forecast
+          </h2>
+
           <TabsList className="bg-white/5 border border-white/10 backdrop-blur-2xl hover:bg-white/10 transition-all duration-300 w-full sm:w-auto">
-            <TabsTrigger 
-              value="today" 
+            <TabsTrigger
+              value="today"
               className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/15 data-[state=active]:shadow-lg transition-all duration-300 hover:text-white hover:bg-white/5 flex-1 sm:flex-initial text-sm px-4"
             >
               Today
             </TabsTrigger>
-            <TabsTrigger 
-              value="week" 
+            <TabsTrigger
+              value="week"
               className="text-white/70 data-[state=active]:text-white data-[state=active]:bg-white/15 data-[state=active]:shadow-lg transition-all duration-300 hover:text-white hover:bg-white/5 flex-1 sm:flex-initial text-sm px-4"
             >
               7 Days
@@ -122,7 +151,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
           </TabsList>
         </div>
 
-        <div >
+        <div>
           <TabsContent value="today" className="mt-0">
             <motion.div
               key="today"
@@ -134,29 +163,29 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
             >
               <div className="overflow-x-auto overflow-y-hidden py-2 lg:overflow-hidden">
                 <div className="flex gap-3 min-w-max px-1">
-                  {upcomingHours.slice(0,10).map((hour, index) => (
+                  {upcomingHours.slice(0, 10).map((hour, index) => (
                     <motion.div
                       key={index}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      whileHover={{ 
+                      whileHover={{
                         y: -2,
                         scale: 1.02,
                         backgroundColor: "rgba(255, 255, 255, 0.12)",
                         borderColor: "rgba(255, 255, 255, 0.3)",
-                        zIndex: 10
+                        zIndex: 10,
                       }}
-                      transition={{ 
-                        duration: 0.2, 
+                      transition={{
+                        duration: 0.2,
                         delay: index * 0.05,
-                        ease: "easeOut"
+                        ease: "easeOut",
                       }}
                       className="flex flex-col items-center p-3 sm:p-4 rounded-2xl bg-white/6 hover:bg-white/12 transition-all duration-200 border border-white/10 hover:border-white/25 backdrop-blur-sm min-w-[90px] sm:min-w-[100px] cursor-pointer group relative hover:shadow-lg"
                     >
                       <span className="text-white/70 text-xs mb-3 font-medium whitespace-nowrap group-hover:text-white/90 transition-colors">
                         {formatHour(hour.time)}
                       </span>
-                      
+
                       <motion.img
                         src={`https:${hour.condition.icon}`}
                         alt={hour.condition.text}
@@ -164,13 +193,13 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.2 }}
                       />
-                      
+
                       <span className="text-white font-bold text-base sm:text-lg mb-2 group-hover:scale-105 transition-transform">
                         {Math.round(hour.temp_c)}°
                       </span>
-                      
+
                       {hour.chance_of_rain > 0 && (
-                        <motion.span 
+                        <motion.span
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: index * 0.05 + 0.2 }}
@@ -202,24 +231,24 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
                       key={index}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      whileHover={{ 
+                      whileHover={{
                         y: -2,
                         scale: 1.02,
                         backgroundColor: "rgba(255, 255, 255, 0.12)",
                         borderColor: "rgba(255, 255, 255, 0.3)",
-                        zIndex: 10
+                        zIndex: 10,
                       }}
-                      transition={{ 
-                        duration: 0.2, 
+                      transition={{
+                        duration: 0.2,
                         delay: index * 0.05,
-                        ease: "easeOut"
+                        ease: "easeOut",
                       }}
                       className="flex flex-col items-center p-3 sm:p-4 rounded-2xl bg-white/6 hover:bg-white/12 transition-all duration-200 border border-white/10 hover:border-white/25 backdrop-blur-sm min-w-[120px] sm:min-w-[140px] cursor-pointer group relative hover:shadow-lg"
                     >
                       <span className="text-white font-semibold text-xs sm:text-sm mb-3 whitespace-nowrap group-hover:text-white/90 transition-colors">
                         {formatDate(day.date)}
                       </span>
-                      
+
                       <motion.img
                         src={`https:${day.day.condition.icon}`}
                         alt={day.day.condition.text}
@@ -227,25 +256,28 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ forecast, loading = f
                         whileHover={{ scale: 1.05 }}
                         transition={{ duration: 0.2 }}
                       />
-                      
+
                       <span className="text-white/80 text-xs sm:text-sm capitalize mb-3 text-center leading-tight group-hover:text-white transition-colors">
                         {day.day.condition.text}
                       </span>
-                      
+
                       <div className="flex items-center gap-2 sm:gap-3 w-full">
                         <span className="text-white/60 text-xs sm:text-sm font-medium min-w-[25px] text-center">
                           {Math.round(day.day.mintemp_c)}°
                         </span>
-                        
+
                         <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden relative">
-                          <motion.div 
+                          <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: "75%" }}
-                            transition={{ duration: 0.8, delay: 0.3 + index * 0.1 }}
-                            className="h-full bg-gradient-to-r from-blue-400 via-purple-500 to-orange-400 rounded-full shadow-sm" 
+                            transition={{
+                              duration: 0.8,
+                              delay: 0.3 + index * 0.1,
+                            }}
+                            className="h-full bg-gradient-to-r from-blue-400 via-purple-500 to-orange-400 rounded-full shadow-sm"
                           />
                         </div>
-                        
+
                         <span className="text-white font-bold text-xs sm:text-sm min-w-[25px] text-center group-hover:scale-105 transition-transform">
                           {Math.round(day.day.maxtemp_c)}°
                         </span>

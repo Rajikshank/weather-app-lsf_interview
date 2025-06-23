@@ -4,18 +4,13 @@ import { Github, Linkedin } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="relative z-10 mt-8 border-t border-white/10 bg-black/20 backdrop-blur-sm">
+    <footer className="relative z-10 mt-8 border-t border-white/40   bg-black/20 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col md:flex-row items-center justify-center gap-4">
-          {/* <div className="flex items-center gap-4">
-            <Sun className="scale-75" />
-            <span className="text-white/70 text-sm">
-              Beautiful weather, beautifully presented
-            </span>
-          </div> */}
+       
           
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-1 text-white/70 text-sm">
+            <div className="flex items-center gap-1 hover:text-white text-white/70 text-sm">
               Developed By Rajikshan
             </div>
             

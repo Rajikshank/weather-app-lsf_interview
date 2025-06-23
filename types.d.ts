@@ -44,12 +44,12 @@
 //   current: Weather
 // }
 
-// export interface WeatherError {
-//   error: {
-//     code: unknown;
-//     message: unknown;
-//   };
-// }
+export interface WeatherError {
+  error: {
+    code: number;
+    message: string;
+  };
+}
 
 
 
@@ -63,7 +63,9 @@ export interface WeatherData {
   current: {
     temp_c: number;
     temp_f: number;
+    is_day:number
     condition: {
+      code:number
       text: string;
       icon: string;
     };
