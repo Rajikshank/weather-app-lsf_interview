@@ -38,20 +38,11 @@
 
 ## 📸 Demo & Screenshots
 
-
-
-
-https://github.com/user-attachments/assets/81dcdbc8-a2a6-43e4-b983-184008f4c624
+https://github.com/user-attachments/assets/99a8c6ce-7b05-4de1-90ed-571c239a365a
 
 ![image](https://github.com/user-attachments/assets/3e3cfd12-7f64-464b-88a6-9587b00f510e)
 ![image](https://github.com/user-attachments/assets/73937284-2d32-412f-ae11-9ea36746e194)
 ![image](https://github.com/user-attachments/assets/1bc36947-a288-4a45-bf60-a563dfbc663c)
-
-
-
-
-
-
 
 ---
 
