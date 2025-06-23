@@ -12,10 +12,11 @@ interface WeatherHighlightsProps {
 
 //weather higlights component
 
-const WeatherHighlights: React.FC<WeatherHighlightsProps> = ({
+function WeatherHighlights({
   data,
-  loading = false,error
-}) => {
+  loading = false,
+  error,
+}: WeatherHighlightsProps) {
   const getUVLevel = (uv: number) => {
     if (uv < 3)
       return {
@@ -180,70 +181,66 @@ const WeatherHighlights: React.FC<WeatherHighlightsProps> = ({
   }
 
   if (!data || error) {
-    return   <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: 0.1 }}
-      className="space-y-4"
-    >
-      <h2 className="text-lg sm:text-xl font-semibold text-white mb-6">
-        Today's Highlights
-      </h2>
-
+    return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{
-          scale: 1.02,
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-          borderColor: "rgba(255, 255, 255, 0.3)",
-        }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="bg-white/10 backdrop-blur-xl border ring-1 ring-red-500 border-white/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        className="space-y-4"
       >
-         
+        <h2 className="text-lg sm:text-xl font-semibold text-white mb-6">
+          Today's Highlights
+        </h2>
 
-        <div className="space-y-4 flex items-center justify-center">
-           <AlertCircle className="text-red-500 size-32 animate-pulse"/>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{
+            scale: 1.02,
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-white/10 backdrop-blur-xl border ring-1 ring-red-500 border-white/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
+        >
+          <div className="space-y-4 flex items-center justify-center">
+            <AlertCircle className="text-red-500 size-32 animate-pulse" />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{
+            scale: 1.02,
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-white/10 backdrop-blur-xl border ring-1 ring-red-500 border-white/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
+        >
+          <div className="space-y-4 flex items-center justify-center">
+            <AlertCircle className="text-red-500 size-32 animate-pulse" />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{
+            scale: 1.02,
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+          }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="bg-white/10 backdrop-blur-xl border ring-1 ring-red-500 border-white/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
+        >
+          <div className="space-y-4 flex items-center justify-center">
+            <AlertCircle className="text-red-500 size-32 animate-pulse" />
+          </div>
+        </motion.div>
       </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{
-          scale: 1.02,
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-          borderColor: "rgba(255, 255, 255, 0.3)",
-        }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="bg-white/10 backdrop-blur-xl border ring-1 ring-red-500 border-white/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
-      >
-       <div className="space-y-4 flex items-center justify-center">
-           <AlertCircle className="text-red-500 size-32 animate-pulse"/>
-        </div>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{
-          scale: 1.02,
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-          borderColor: "rgba(255, 255, 255, 0.3)",
-        }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="bg-white/10 backdrop-blur-xl border ring-1 ring-red-500 border-white/20 rounded-2xl p-6 hover:shadow-xl transition-all duration-300"
-      >
-         <div className="space-y-4 flex items-center justify-center">
-           <AlertCircle className="text-red-500 size-32 animate-pulse"/>
-        </div>
-      </motion.div>
-
-     
-    
-     
-    </motion.div>;
+    );
   }
 
   return (
@@ -534,6 +531,6 @@ const WeatherHighlights: React.FC<WeatherHighlightsProps> = ({
       )}
     </motion.div>
   );
-};
+}
 
 export default WeatherHighlights;

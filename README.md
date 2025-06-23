@@ -23,7 +23,7 @@
 
 ## ✨ Features
 
-* 🌍 **Geolocation Fetching** — Automatically detect your location and fetch local weather.
+* 🌍 **Geolocation Fetching** — Automatically detect your location and fetch local weather using geolocation API and fallback to default location if geolocation not available or blocked by the user.
 * 🔍 **Search & History** — Search other cities and store recent searches in local storage.
 * ☀️🌙 **Day & Night Modes** — Dynamic icons and backgrounds based on time of day.
 * 🌧️ **Ambient Effects & Music** — Rain, snow, and clear-day backround ambient effect with matching background audio (rain,snow).
@@ -57,7 +57,7 @@ https://github.com/user-attachments/assets/99a8c6ce-7b05-4de1-90ed-571c239a365a
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/weatherly.git
+git clone https://github.com/Rajikshank/weather-app-lsf_interview.git
 cd weatherly
 
 # Install dependencies
@@ -81,7 +81,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser. The app wil
 
 ## 🏗️ App Design Details
 
-* **Modular Components**: The UI is broken into small, reusable React components (CurrentWeather, WeatherHighlights, ForecastList) for easy maintenance.
+* **Modular Components**: The UI is broken into small, reusable React components (CurrentWeather, WeatherHighlights, WeatherForecast) for easy maintenance.
 * **State Management**: Local component state handles UI interactions (mute toggle, search input), while global data fetching is managed by TanStack Query.
 * **Input Sanitization**: All user inputs (e.g., city names) are client-side trimmed and validated to strip out unwanted characters and ensure only well-formed API requests are sent, reducing errors and improving reliability.
 * **Caching Strategy**: We use TanStack Query to cache weather API responses for **5 minutes**. This:

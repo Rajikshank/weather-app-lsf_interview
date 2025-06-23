@@ -14,11 +14,11 @@ interface WeatherForecastProps {
 
 //weather forecast compoenent
 
-const WeatherForecast: React.FC<WeatherForecastProps> = ({
+function WeatherForecast({
   forecast,
   loading = false,
   error,
-}) => {
+}: WeatherForecastProps) {
   const [activeTab, setActiveTab] = useState("today");
 
   const formatDate = (dateString: string) => {
@@ -96,18 +96,15 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
   if (!forecast || forecast.length === 0 || error) {
     return (
       <motion.div
-      
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{
-        scale: 1.005,
-       
-      }}
-      transition={{ duration: 0.4, delay: 0.3 }}
-      className="bg-white/5 min-h-[320px] ring-1 ring-red-500 flex justify-center items-center  backdrop-blur-2xl border border-white/10 rounded-3xl p-4 sm:p-6 hover:bg-white/8 hover:border-white/20 transition-all duration-300 shadow-2xl w-full relative">
-     
-          <AlertCircle className="size-32 animate-pulse  text-red-500 "/>{" "}
-      
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{
+          scale: 1.005,
+        }}
+        transition={{ duration: 0.4, delay: 0.3 }}
+        className="bg-white/5 min-h-[320px] ring-1 ring-red-500 flex justify-center items-center  backdrop-blur-2xl border border-white/10 rounded-3xl p-4 sm:p-6 hover:bg-white/8 hover:border-white/20 transition-all duration-300 shadow-2xl w-full relative"
+      >
+        <AlertCircle className="size-32 animate-pulse  text-red-500 " />{" "}
       </motion.div>
     );
   }
@@ -292,6 +289,6 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({
       </Tabs>
     </motion.div>
   );
-};
+}
 
 export default WeatherForecast;

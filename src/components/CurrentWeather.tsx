@@ -17,24 +17,21 @@ interface CurrentWeatherProps {
 
 //current weather component
 
-const CurrentWeather: React.FC<CurrentWeatherProps> = ({
+function CurrentWeather({
   data,
   loading = false,
   onSearch,
   searchLoading = false,
   error = null,
   audioref,
-}) => {
+}: CurrentWeatherProps) {
   const [muted, setMuted] = useState<boolean>(false);
 
+  useEffect(() => {
+    setMuted(() => false);
+  }, [data]);
 
-  useEffect(()=>{
-
-    setMuted(()=>false)
-  },[data])
-
-
-
+  //function to formate the datestring to local date string
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -45,6 +42,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
     });
   };
 
+  //function to format the time from date string
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
@@ -53,6 +51,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
     });
   };
 
+  // function to get weather overly images based on current weather conditions
   const getWeatherOverlay = () => {
     if (!data)
       return "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=800&q=80";
@@ -82,6 +81,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
     return "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?w=800&q=80";
   };
 
+  // component to show loading state
   const LoadingSkeleton = () => (
     <motion.div
       initial={{ opacity: 0 }}
@@ -184,6 +184,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
     </motion.div>
   );
 
+  // component to display errors
   const ErrorDisplay = () => (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -244,6 +245,7 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
     return <ErrorDisplay />;
   }
 
+  //function to handle mute the ambient audio
   function handleMute() {
     if (audioref.current) {
       const audio = audioref.current;
@@ -357,7 +359,10 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
                   Feels like {Math.round(data.current.feelslike_c)}°
                 </motion.p>
 
-                <button onClick={()=>handleMute()} className="cursor-pointer hover:bg-white/20 hover:scale-110 hover:rounded-full p-1">
+                <button
+                  onClick={() => handleMute()}
+                  className="cursor-pointer hover:bg-white/20 hover:scale-110 hover:rounded-full p-1"
+                >
                   <div className="transition-all duration-500 ease-in-out">
                     {!muted ? (
                       <Megaphone className="text-white size-6" />
@@ -471,6 +476,6 @@ const CurrentWeather: React.FC<CurrentWeatherProps> = ({
       </div>
     </motion.div>
   );
-};
+}
 
 export default CurrentWeather;

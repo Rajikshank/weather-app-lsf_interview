@@ -11,13 +11,13 @@ interface LocationSearchProps {
   loading: boolean;
 }
 
-const LocationSearch: React.FC<LocationSearchProps> = ({
+function LocationSearch({
   locationName,
   locationRegion,
   locationCountry,
   onSearch,
   loading,
-}) => {
+}: LocationSearchProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [showRecentDropdown, setShowRecentDropdown] = useState(false);
@@ -25,6 +25,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // showing recent search box using useffect when component mounted
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -39,6 +40,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  //function to sanitize the user input
   const sanitizeQuery = (query: string): string => {
     if (typeof query !== "string") return "";
 
@@ -58,6 +60,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
     }
   };
 
+  //function to handle the search function and internal state
   const handleSearch = (searchQuery: string) => {
     onSearch(searchQuery);
     setQuery("");
@@ -65,18 +68,21 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
     setShowRecentDropdown(false);
   };
 
+  //function to handle search cancel button and handle the internal state
   const handleCancel = () => {
     setQuery("");
     setIsSearchOpen(false);
     setShowRecentDropdown(false);
   };
 
+  // function to handle input box focus and interal state
   const handleInputFocus = () => {
     if (recentLocations.length > 0) {
       setShowRecentDropdown(true);
     }
   };
 
+  // function to handle the input change and update the state variable
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     if (e.target.value.length > 0) {
@@ -86,6 +92,7 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
     }
   };
 
+  // filtering the recent locations
   const filteredRecentLocations = recentLocations.filter(
     (location) =>
       query.length === 0 ||
@@ -243,6 +250,6 @@ const LocationSearch: React.FC<LocationSearchProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default LocationSearch;

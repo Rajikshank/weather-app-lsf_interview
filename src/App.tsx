@@ -13,7 +13,7 @@ import rain from "@/assets/Rain_effect.json";
 import snow from "@/assets/Snow_effect.json";
 import Lottie from "react-lottie";
 
-const App = () => {
+function App() {
   const { getDefaultLocation } = useLocationManager();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [location, setLocation] = useState<string | null>("colombo");
@@ -317,7 +317,7 @@ const App = () => {
                 loading={loading}
                 onSearch={handleSearch}
                 searchLoading={loading}
-                error={error }
+                error={error}
                 audioref={audioRef}
               />
             </motion.div>
@@ -353,6 +353,6 @@ const App = () => {
       <Footer />
     </div>
   );
-};
+}
 
 export default App;
