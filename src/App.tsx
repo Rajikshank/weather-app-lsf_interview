@@ -139,7 +139,7 @@ function App() {
     if (condition.includes("sunny") || condition.includes("clear")) {
       return isNight
         ? "from-gray-900 via-gray-800 to-slate-900"
-        : "from-gray-800 via-gray-700 to-gray-800";
+        : "from-gray-800 via-gray-700 to-gray-500";
     } else if (
       condition.includes("rain") ||
       condition.includes("drizzle") ||
